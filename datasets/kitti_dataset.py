@@ -9,8 +9,8 @@ from datasets.data_io import get_transform, read_all_lines
 class KITTIDataset(Dataset):
     def __init__(self, datapath, list_filename, training):
         self.datapath = datapath
-        self.left_filenames, self.right_filenames, self.disp_filenames = self.load_path(list_filename)
         self.training = training
+        self.left_filenames, self.right_filenames, self.disp_filenames = self.load_path(list_filename)
         if self.training:
             assert self.disp_filenames is not None
 
@@ -19,7 +19,7 @@ class KITTIDataset(Dataset):
         splits = [line.split() for line in lines]
         left_images = [x[0] for x in splits]
         right_images = [x[1] for x in splits]
-        if len(splits[0]) == 2:  # ground truth not available
+        if len(splits[0]) == 2 or not self.training:  # ground truth not available
             return left_images, right_images, None
         else:
             disp_images = [x[2] for x in splits]

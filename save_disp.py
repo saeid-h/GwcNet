@@ -30,6 +30,8 @@ parser.add_argument('--dataset', default='kitti', help='dataset name', choices=_
 parser.add_argument('--datapath', required=True, help='data path')
 parser.add_argument('--testlist', required=True, help='testing list')
 parser.add_argument('--loadckpt', required=True, help='load the weights from a specific checkpoint')
+parser.add_argument('--predictions', required=False, help='save the results to this directory', default="predictions")
+
 
 # parse arguments
 args = parser.parse_args()
@@ -51,7 +53,7 @@ model.load_state_dict(state_dict['model'])
 
 
 def test():
-    os.makedirs('./predictions', exist_ok=True)
+    os.makedirs(args.predictions, exist_ok=True)
     for batch_idx, sample in enumerate(TestImgLoader):
         start_time = time.time()
         disp_est_np = tensor2numpy(test_sample(sample))
@@ -64,7 +66,7 @@ def test():
         for disp_est, top_pad, right_pad, fn in zip(disp_est_np, top_pad_np, right_pad_np, left_filenames):
             assert len(disp_est.shape) == 2
             disp_est = np.array(disp_est[top_pad:, :-right_pad], dtype=np.float32)
-            fn = os.path.join("predictions", fn.split('/')[-1])
+            fn = os.path.join(args.predictions, fn.split('/')[-1])
             print("saving to", fn, disp_est.shape)
             disp_est_uint = np.round(disp_est * 256).astype(np.uint16)
             skimage.io.imsave(fn, disp_est_uint)

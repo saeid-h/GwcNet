@@ -65,3 +65,4 @@ py3-*/
 # folders
 dataset*
 logs*
+checkpoints*

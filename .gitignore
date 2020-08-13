@@ -63,5 +63,5 @@ py3-*/
 .vscode/
 
 # folders
-dataset/
-logs/
+dataset*
+logs*
